@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SANDARU MD V1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--g:#39ff14;--g2:#00c853;--r:57,255,20;--mut:#86a88a;--card:rgba(4,10,5,.8)}
+*{box-sizing:border-box;margin:0}
+body{background:#000;color:#ecfaee;font-family:Rajdhani,system-ui,sans-serif;font-size:1.05rem;line-height:1.5;overflow-x:hidden;min-height:100vh}
+h1,h2,h3,.logo,.num,.btn,.chip,.links a,.back,summary{font-family:Orbitron,Rajdhani,sans-serif}
+
+/* background: anime character (swap character.svg with your own image) */
+.bgchar{position:fixed;right:-6vw;bottom:0;width:min(130vw,820px);height:100vh;z-index:0;pointer-events:none;
+  background:url(character.svg) right bottom/contain no-repeat;opacity:.8;
+  -webkit-mask-image:radial-gradient(ellipse at 55% 40%,#000 30%,transparent 72%);mask-image:radial-gradient(ellipse at 55% 40%,#000 30%,transparent 72%);
+  animation:float 9s ease-in-out infinite alternate}
+@keyframes float{to{transform:translateY(-14px) scale(1.02)}}
+.shade{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.15) 40%,rgba(0,0,0,.6))}
+#dust{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 18px}
+
+nav{position:sticky;top:0;z-index:5;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);border-bottom:1px solid rgba(var(--r),.22)}
+nav .wrap{display:flex;align-items:center;gap:22px;height:58px}
+.logo{font-weight:900;letter-spacing:.14em;white-space:nowrap;text-decoration:none;color:#fff;text-shadow:0 0 14px var(--g)}
+.links{display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;margin-left:auto}
+.links::-webkit-scrollbar{display:none}
+.links a{color:var(--mut);text-decoration:none;font-size:.72rem;letter-spacing:.16em;white-space:nowrap;padding:4px 0;border-bottom:2px solid transparent;transition:color .2s}
+.links a:hover{color:#fff}
+.links a.on{color:var(--g);border-color:var(--g)}
+
+.page{display:none;padding-bottom:20px}
+.page.show{display:block;animation:in .45s ease}
+@keyframes in{from{opacity:0;transform:translateY(14px)}}
+
+.hero{padding:28px 0 6px;text-align:center}
+.frame{padding:2px;border-radius:16px;background:linear-gradient(120deg,#39ff14,#0a3d0f,#8dff6a,#0a3d0f,#39ff14);background-size:300% 300%;animation:flow 8s linear infinite;box-shadow:0 0 40px rgba(var(--r),.35)}
+@keyframes flow{to{background-position:300% 0}}
+.frame img{display:block;width:100%;height:auto;border-radius:14px}
+.hero h1{margin-top:28px;font-size:clamp(1.8rem,8vw,3.8rem);font-weight:900;letter-spacing:.05em;color:#fff;text-shadow:0 0 28px var(--g)}
+.hero h1 b,h2 b{color:var(--g);text-shadow:0 0 22px var(--g)}
+.hero p,.sub{color:var(--mut);letter-spacing:.14em;font-size:.92rem}
+.hero p{margin-top:6px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
+.chip{font-size:.68rem;letter-spacing:.12em;padding:9px 14px;border-radius:999px;border:1px solid rgba(var(--r),.5);color:var(--g);background:rgba(var(--r),.08)}
+
+h2{font-size:clamp(1.4rem,6vw,2.4rem);font-weight:900;letter-spacing:.04em}
+.sec{padding-top:56px}
+.sub{margin:2px 0 22px}
+.head{padding:34px 0 0}
+.back{display:inline-block;color:var(--g);text-decoration:none;font-size:.72rem;letter-spacing:.14em;border:1px solid rgba(var(--r),.45);background:rgba(var(--r),.08);padding:9px 14px;border-radius:999px;margin-bottom:22px}
+.back:hover{background:rgba(var(--r),.22)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:30px;border:1px solid rgba(var(--r),.25);border-radius:14px;background:var(--card);backdrop-filter:blur(6px)}
+.stats div{padding:18px 6px;text-align:center;border-right:1px solid rgba(var(--r),.18)}
+.stats div:last-child{border:0}
+.stats b{display:block;font-family:Orbitron,sans-serif;font-size:clamp(1.1rem,5vw,1.8rem);color:var(--g);text-shadow:0 0 14px var(--g)}
+.stats span{color:var(--mut);font-size:.82rem}
+
+/* cards / grids */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.sys{display:block;position:relative;text-decoration:none;color:inherit;background:var(--card);border:1px solid rgba(var(--r),.26);border-radius:14px;padding:18px 16px;overflow:hidden;backdrop-filter:blur(5px)}
+.sys::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 0 0,rgba(var(--r),.18),transparent 65%)}
+a.sys{transition:transform .25s,box-shadow .25s,border-color .25s}
+a.sys:hover{transform:translateY(-4px);border-color:var(--g);box-shadow:0 0 28px rgba(var(--r),.4)}
+.num{position:relative;font-size:1.9rem;font-weight:900;color:var(--g);text-shadow:0 0 16px var(--g)}
+.sys strong{position:relative;display:block;font-family:Orbitron,sans-serif;font-size:.76rem;letter-spacing:.1em;margin:6px 0 4px}
+.sys span{position:relative;color:var(--mut);font-size:.92rem}
+.card{position:relative;background:var(--card);border:1px solid rgba(var(--r),.25);border-radius:16px;padding:24px 18px;backdrop-filter:blur(6px);box-shadow:0 0 30px rgba(var(--r),.1)}
+.card::before{content:"";position:absolute;left:18px;right:18px;top:-1px;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);box-shadow:0 0 12px var(--g)}
+
+/* faq */
+details{background:var(--card);border:1px solid rgba(var(--r),.25);border-radius:12px;padding:0 16px;margin-bottom:10px;backdrop-filter:blur(5px)}
+summary{cursor:pointer;padding:15px 0;font-size:.8rem;letter-spacing:.06em;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--g);font-size:1.2rem;line-height:1}
+details[open] summary::after{content:"–"}
+details p{color:var(--mut);padding:0 0 16px}
+
+/* call to action */
+.cta{text-align:center;border:1px solid var(--g);border-radius:18px;padding:34px 18px;background:linear-gradient(180deg,rgba(var(--r),.14),rgba(0,0,0,.7));box-shadow:0 0 40px rgba(var(--r),.25)}
+.cta h2{margin-bottom:6px}
+.cta .btn{max-width:320px;margin:20px auto 0}
+
+input{width:100%;background:rgba(0,0,0,.65);color:#fff;border:1px solid rgba(var(--r),.4);border-radius:10px;padding:14px;font:inherit;font-size:1.05rem;margin-bottom:12px}
+input:focus{outline:none;border-color:var(--g);box-shadow:0 0 16px rgba(var(--r),.45)}
+:focus-visible{outline:2px solid var(--g);outline-offset:3px}
+.btn{display:block;width:100%;background:linear-gradient(90deg,var(--g),var(--g2));color:#021002;border:0;border-radius:10px;padding:15px 18px;font-size:.8rem;font-weight:700;letter-spacing:.13em;cursor:pointer;text-decoration:none;text-align:center;box-shadow:0 0 22px rgba(var(--r),.45);transition:transform .2s,filter .2s}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.12)}
+.btn:disabled{opacity:.5;cursor:wait}
+.btn.ghost{background:rgba(var(--r),.08);color:var(--g);border:1px solid rgba(var(--r),.5);box-shadow:none}
+.btn.ghost:hover{background:rgba(var(--r),.2)}
+#result{margin-top:16px;color:var(--mut);min-height:22px}
+#result.err{color:#ff7a7a;border-left:3px solid #ff7a7a;padding-left:10px}
+.code{font-family:Orbitron,ui-monospace,monospace;font-size:clamp(1.6rem,8vw,2.7rem);font-weight:700;letter-spacing:.14em;text-align:center;color:#fff;text-shadow:0 0 18px var(--g),0 0 40px var(--g);border:1px dashed var(--g);border-radius:12px;padding:20px 6px;margin-bottom:12px;user-select:all}
+.hint{color:var(--mut);font-size:.9rem;margin-top:12px}
+dl{display:grid;grid-template-columns:auto 1fr}
+dt,dd{padding:12px 0;border-bottom:1px solid rgba(var(--r),.15)}
+dt{color:var(--mut);padding-right:18px}
+dd{text-align:right;font-weight:600;color:#fff}
+ul.list{list-style:none;padding:0}
+ul.list li{padding:12px 0;border-bottom:1px solid rgba(var(--r),.15)}
+ul.list b{display:block;color:var(--g);font-family:Orbitron,sans-serif;font-size:.85rem;letter-spacing:.06em}
+ul.list span{color:var(--mut)}
+#ownerLinks{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s;margin-top:14px}
+#ownerLinks.open{grid-template-rows:1fr}
+#ownerLinks>div{overflow:hidden;display:grid;gap:10px}
+.n{display:block;font-family:Rajdhani,sans-serif;font-weight:500;letter-spacing:.04em;opacity:.8;margin-top:2px}
+footer{position:relative;z-index:1;text-align:center;color:var(--mut);font-size:.9rem;padding:60px 18px 34px;letter-spacing:.06em}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bgchar" aria-hidden="true"></div>
+<div class="shade" aria-hidden="true"></div>
+<canvas id="dust" aria-hidden="true"></canvas>
+
+<nav><div class="wrap">
+  <a class="logo" href="#home">SANDARU MD V1</a>
+  <div class="links" id="links">
+    <a href="#home" data-p="home">HOME</a><a href="#pair" data-p="pair">PAIRING</a><a href="#info" data-p="info">INFO</a>
+    <a href="#owners" data-p="owners">OWNERS</a><a href="#features" data-p="features">FEATURES</a><a href="#cmds" data-p="cmds">COMMANDS</a><a href="#support" data-p="support">SUPPORT</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+
+  <!-- HOME -->
+  <div class="page" id="home">
+    <header class="hero">
+      <div class="frame"><img src="banner.jpg" alt="SANDARU MD banner"></div>
+      <h1>SANDARU MD <b>V1</b></h1>
+      <p>WHATSAPP BOT / DIGITAL COMMAND SYSTEM</p>
+      <div class="chips"><span class="chip">WHATSAPP BOT</span><span class="chip">SAFE &amp; FAST</span><span class="chip">MULTI FEATURES</span><span class="chip">SIMPLE &amp; POWERFUL</span></div>
+    </header>
+
+    <div class="stats">
+      <div><b>24/7</b><span>Online</span></div>
+      <div><b>6</b><span>Modules</span></div>
+      <div><b>2</b><span>Owners</span></div>
+      <div><b>V1</b><span>Version</span></div>
+    </div>
+
+    <section class="sec">
+      <h2>SYSTEM <b>NETWORK.</b></h2>
+      <p class="sub">CHOOSE A MODULE</p>
+      <div class="grid">
+        <a class="sys" href="#pair"><div class="num">01</div><strong>PAIRING</strong><span>Get your pairing code.</span></a>
+        <a class="sys" href="#info"><div class="num">02</div><strong>BOT INFO</strong><span>Version and platform.</span></a>
+        <a class="sys" href="#owners"><div class="num">03</div><strong>BOT OWNERS</strong><span>Message the owners.</span></a>
+        <a class="sys" href="#features"><div class="num">04</div><strong>FEATURES</strong><span>What the bot can do.</span></a>
+        <a class="sys" href="#cmds"><div class="num">05</div><strong>COMMANDS</strong><span>List of commands.</span></a>
+        <a class="sys" href="#support"><div class="num">06</div><strong>SUPPORT</strong><span>Help when stuck.</span></a>
+      </div>
+    </section>
+
+    <section class="sec">
+      <h2>HOW IT <b>WORKS.</b></h2>
+      <p class="sub">LINK YOUR BOT IN FOUR STEPS</p>
+      <div class="grid">
+        <div class="sys"><div class="num">1</div><strong>ENTER NUMBER</strong><span>Open Pairing and type your WhatsApp number.</span></div>
+        <div class="sys"><div class="num">2</div><strong>GET CODE</strong><span>Tap the button and wait a few seconds.</span></div>
+        <div class="sys"><div class="num">3</div><strong>OPEN WHATSAPP</strong><span>Go to Linked devices, then Link with phone number.</span></div>
+        <div class="sys"><div class="num">4</div><strong>TYPE CODE</strong><span>Enter the code and your bot goes online.</span></div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <h2>WHY <b>SANDARU MD.</b></h2>
+      <p class="sub">SMALL BOT / BIG POWER</p>
+      <div class="card"><ul class="list">
+        <li><b>Safe and private</b><span>Your number is used only to create the pairing code.</span></li>
+        <li><b>Fast response</b><span>Commands reply in seconds on a hosted panel.</span></li>
+        <li><b>Easy to use</b><span>No QR scan and no app install, only a code.</span></li>
+        <li><b>Made by SANDARU DEV</b><span>Updated and supported by the owner.</span></li>
+      </ul></div>
+    </section>
+
+    <section class="sec">
+      <h2>QUICK <b>ANSWERS.</b></h2>
+      <p class="sub">COMMON QUESTIONS</p>
+      <details><summary>How long does the code last?</summary><p>About two minutes. If it expires, request a new one.</p></details>
+      <details><summary>Which number format should I use?</summary><p>Country code first, no plus and no spaces. Example: 947XXXXXXXX.</p></details>
+      <details><summary>The code does not arrive. What now?</summary><p>Check your number, wait a moment and try again. Still stuck? Message the owner from the Support page.</p></details>
+      <details><summary>Can I link more than one number?</summary><p>Yes, request a separate code for each number.</p></details>
+    </section>
+
+    <section class="sec">
+      <div class="cta">
+        <h2>READY TO <b>LINK?</b></h2>
+        <p class="sub" style="margin:0">GET YOUR CODE IN SECONDS</p>
+        <a class="btn" href="#pair">START PAIRING</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- PAIRING -->
+  <div class="page" id="pair">
+    <div class="head"><a class="back" href="#home">← HOME</a>
+      <h2>BOT <b>PAIRING.</b></h2><p class="sub">ENTER NUMBER / GET CODE / LINK DEVICE</p></div>
+    <div class="card">
+      <input id="num" type="tel" inputmode="numeric" placeholder="947XXXXXXXX" autocomplete="tel" aria-label="WhatsApp number">
+      <button class="btn" id="pairBtn">GET PAIRING CODE</button>
+      <div id="result" aria-live="polite"></div>
+      <p class="hint">Use the country code, without “+”.</p>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div class="page" id="info">
+    <div class="head"><a class="back" href="#home">← HOME</a>
+      <h2>BOT <b>INFO.</b></h2><p class="sub">WHAT YOU ARE LINKING</p></div>
+    <div class="card"><dl>
+      <dt>Name</dt><dd>SANDARU MD</dd><dt>Version</dt><dd>V1</dd><dt>Platform</dt><dd>WhatsApp</dd>
+      <dt>Library</dt><dd>Baileys</dd><dt>Hosting</dt><dd>Pterodactyl panel</dd><dt>Developer</dt><dd>SANDARU DEV</dd>
+    </dl></div>
+  </div>
+
+  <!-- OWNERS -->
+  <div class="page" id="owners">
+    <div class="head"><a class="back" href="#home">← HOME</a>
+      <h2>BOT <b>OWNERS.</b></h2><p class="sub">TAP THE OWNER / CHOOSE A NUMBER</p></div>
+    <div class="card">
+      <button class="btn" id="ownerBtn" aria-expanded="false" aria-controls="ownerLinks">SANDARU DEV</button>
+      <div id="ownerLinks"><div>
+        <a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/94751408188?text=Hello%20SANDARU%20DEV">MESSAGE OWNER 1<span class="n">+94 75 140 8188</span></a>
+        <a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/94704807937?text=Hello%20SANDARU%20DEV">MESSAGE OWNER 2<span class="n">+94 70 480 7937</span></a>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="page" id="features">
+    <div class="head"><a class="back" href="#home">← HOME</a>
+      <h2>BOT <b>FEATURES.</b></h2><p class="sub">EDIT THIS LIST TO MATCH YOUR BOT</p></div>
+    <div class="card"><ul class="list">
+      <li><b>Fast pairing</b><span>Link with a code, no QR scan needed.</span></li>
+      <li><b>Safe and fast</b><span>Quick replies, stable connection.</span></li>
+      <li><b>Multi features</b><span>Group, media and fun tools in one bot.</span></li>
+      <li><b>Always online</b><span>Runs 24/7 on a hosted panel.</span></li>
+    </ul></div>
+  </div>
+
+  <!-- COMMANDS -->
+  <div class="page" id="cmds">
+    <div class="head"><a class="back" href="#home">← HOME</a>
+      <h2>BOT <b>COMMANDS.</b></h2><p class="sub">SEND IN ANY CHAT WITH THE BOT</p></div>
+    <div class="card"><ul class="list">
+      <li><b>.menu</b><span>Show all commands.</span></li><li><b>.alive</b><span>Check that the bot is online.</span></li>
+      <li><b>.ping</b><span>Check the response speed.</span></li><li><b>.owner</b><span>Get the owner’s contact.</span></li>
+    </ul></div>
+  </div>
+
+  <!-- SUPPORT -->
+  <div class="page" id="support">
+    <div class="head"><a class="back" href="#home">← HOME</a>
+      <h2>BOT <b>SUPPORT.</b></h2><p class="sub">CODE NOT WORKING OR BOT OFFLINE</p></div>
+    <div class="card">
+      <a class="btn" target="_blank" rel="noopener" href="https://wa.me/94751408188?text=Hello%2C%20I%20need%20help%20with%20SANDARU%20MD%20V1">ASK FOR HELP ON WHATSAPP</a>
+      <p class="hint">WhatsApp → Linked devices → Link with phone number, then type the code.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer>© SANDARU MD V1 · SANDARU DEV</footer>
+
+<script>
+/* Change this to your website backend route */
+const PAIR_API = "/api/pair";   // GET /api/pair?number=947XXXXXXXX → { "code": "ABCD-1234" }
+
+/* Pages */
+const pages = [...document.querySelectorAll(".page")], navLinks = [...document.querySelectorAll("#links a")];
+function show(id){
+  const t = pages.find(p => p.id === id) || document.getElementById("home");
+  pages.forEach(p => p.classList.toggle("show", p === t));
+  navLinks.forEach(a => a.classList.toggle("on", a.dataset.p === t.id));
+  document.title = (t.id === "home" ? "" : t.querySelector("h2").textContent + " · ") + "SANDARU MD V1";
+  window.scrollTo(0, 0);
+  try{ document.querySelector("#links a.on").scrollIntoView({inline: "center", block: "nearest"}); }catch(_){}
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest('a[href^="#"]'); if(!a) return;
+  e.preventDefault();
+  const id = a.getAttribute("href").slice(1); show(id);
+  try{ history.pushState({id}, "", "#" + id); }catch(_){}
+});
+addEventListener("popstate", e => show((e.state && e.state.id) || location.hash.slice(1)));
+show(location.hash.slice(1));
+
+/* Owners */
+const ob = document.getElementById("ownerBtn"), ol = document.getElementById("ownerLinks");
+ob.onclick = () => ob.setAttribute("aria-expanded", ol.classList.toggle("open"));
+
+/* Pairing */
+const numEl = document.getElementById("num"), btn = document.getElementById("pairBtn"), out = document.getElementById("result");
+const note = (t, e) => { out.className = e ? "err" : ""; out.textContent = t; };
+async function pair(){
+  const n = numEl.value.replace(/\D/g, "");
+  if(!/^\d{10,15}$/.test(n)) return note("Enter your number with the country code, like 947XXXXXXXX.", true);
+  btn.disabled = true; note("Requesting your code…");
+  try{
+    const r = await fetch(PAIR_API + "?number=" + n), d = await r.json();
+    if(!r.ok || !d.code) throw new Error(d.error || "Could not get a code. Try again.");
+    out.className = "";
+    out.innerHTML = '<div class="code"></div><button class="btn ghost" id="cp">COPY CODE</button><p class="hint">Enter this code in WhatsApp within 2 minutes.</p>';
+    out.querySelector(".code").textContent = d.code;
+    document.getElementById("cp").onclick = e => navigator.clipboard?.writeText(d.code).then(() => e.target.textContent = "COPIED");
+  }catch(e){ note(e.message || "Server is not reachable. Try again later.", true); }
+  finally{ btn.disabled = false; }
+}
+btn.onclick = pair;
+numEl.onkeydown = e => { if(e.key === "Enter") pair(); };
+
+/* Rising green dust */
+const cv = document.getElementById("dust"), x = cv.getContext("2d");
+let ps = [];
+function fit(){
+  cv.width = innerWidth; cv.height = innerHeight;
+  ps = Array.from({length: Math.min(70, Math.floor(innerWidth * innerHeight / 12000))}, () => ({
+    x: Math.random() * cv.width, y: Math.random() * cv.height, r: Math.random() * 1.8 + .4, v: .15 + Math.random() * .5, a: Math.random() * 6.28
+  }));
+}
+addEventListener("resize", fit); fit();
+function draw(){
+  x.clearRect(0, 0, cv.width, cv.height);
+  for(const p of ps){
+    p.y -= p.v; p.a += .02; p.x += Math.sin(p.a) * .3;
+    if(p.y < -5){ p.y = cv.height + 5; p.x = Math.random() * cv.width; }
+    x.fillStyle = "rgba(57,255,20," + (.25 + .5 * Math.abs(Math.sin(p.a))) + ")";
+    x.beginPath(); x.arc(p.x, p.y, p.r, 0, 6.28); x.fill();
+  }
+  requestAnimationFrame(draw);
+}
+if(!matchMedia("(prefers-reduced-motion: reduce)").matches) draw();
+</script>
+</body>
+</html>
